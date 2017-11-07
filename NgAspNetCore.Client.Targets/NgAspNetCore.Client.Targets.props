@@ -1,4 +1,4 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- 
     This file is packaged with "NgAspNetCore.Client.Targets" in "./build" such that any Module that references
@@ -15,7 +15,15 @@
     <PackageAssetFiles Include="dist\**\*" Exclude="$(ExcludedFiles)" />
   </ItemGroup>
 
-	<!-- When building client application, the module generates module.txt file in obj directory. 
+  <Target Name="BuildClientAppDebug" BeforeTargets="Build"
+          Condition=" '$(Configuration)' == 'Debug' ">
+
+    <Message Importance="high" Text="Performing client application build: $(MSBuildProjectName)..." />
+    <Exec Command="ng build" />
+  </Target>
+
+
+  <!-- When building client application, the module generates module.txt file in obj directory. 
 			 When building server application, it looks for module.txt and invokes CopyPackageAssetFiles if found -->
   <Target Name="CheckManifestFile" AfterTargets="Build" Condition="!Exists('$(ModuleType).txt')">
     <Message Text="Generating manifest file: $(MSBuildProjectName)" Importance="high" />
