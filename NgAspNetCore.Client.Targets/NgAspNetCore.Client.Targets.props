@@ -1,0 +1,44 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- 
+    This file is packaged with "NgAspNetCore.Client.Targets" in "./build" such that any Module that references
+    it will get its static assets copied to "$(ApplicationDirectory)\Packages".
+  -->
+
+  <PropertyGroup>
+    <ModuleManifest>Name: $(MSBuildProjectName)</ModuleManifest>
+    <ExcludedFiles>**\*.cs;*.csproj*;obj\**;bin\**;Assets.json;Assets\**;Properties\**;*.props;*.targets;.vs\**</ExcludedFiles>
+    <ModuleType Condition="'$(ModuleType)' == ''">Module</ModuleType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageAssetFiles Include="dist\**\*" Exclude="$(ExcludedFiles)" />
+  </ItemGroup>
+
+	<!-- When building client application, the module generates module.txt file in obj directory. 
+			 When building server application, it looks for module.txt and invokes CopyPackageAssetFiles if found -->
+  <Target Name="CheckManifestFile" AfterTargets="Build" Condition="!Exists('$(ModuleType).txt')">
+    <Message Text="Generating manifest file: $(MSBuildProjectName)" Importance="high" />
+    <WriteLinesToFile
+      File="obj\$(ModuleType).txt"
+      Lines="$(ModuleManifest)"
+      Overwrite="true"
+      Encoding="utf-8"
+      ContinueOnError="true" />
+  </Target>
+
+  <Target Name="CopyPackageAssetFiles" Condition="'$(ApplicationDirectory)' != '' And Exists('$(ApplicationDirectory)')">
+    <ItemGroup>
+      <ApplicationAssetFiles Include="$(ApplicationDirectory)\wwwroot\dist\$(MSBuildProjectName)\**\*" />
+    </ItemGroup>
+    <Delete
+      Files="@(ApplicationAssetFiles)"
+      Condition="!Exists('%(RecursiveDir)%(Filename)%(Extension)')"
+      ContinueOnError="true"/>
+    <Message Text="Packaging asset files: $(MSBuildProjectName)" Importance="high" />
+    <Copy
+      SourceFiles="@(PackageAssetFiles)"
+      DestinationFolder="$(ApplicationDirectory)\wwwroot\dist\$(MSBuildProjectName)\%(RecursiveDir)" />
+  </Target>
+  
+</Project>

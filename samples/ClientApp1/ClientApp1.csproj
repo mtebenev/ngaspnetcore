@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Necessary as we reference the Project and not the Package -->
+  <Import Project="..\..\NgAspNetCore.Client.Targets\NgAspNetCore.Client.Targets.props" />
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
@@ -7,5 +10,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\NgAspNetCore.Client.Targets\NgAspNetCore.Client.Targets.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>node_modules/**;$(DefaultItemExcludes)</DefaultItemExcludes>
+  </PropertyGroup>
 
 </Project>

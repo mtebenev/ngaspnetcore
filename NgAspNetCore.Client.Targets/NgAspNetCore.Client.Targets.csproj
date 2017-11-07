@@ -4,4 +4,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <!-- Add the OrchardCore.Module.props file in the package -->
+  <ItemGroup>
+    <None Include="NgAspNetCore.Client.Targets.props" Pack="true">
+      <PackagePath>build\$(TargetFramework)\NgAspNetCore.Client.Targets.props</PackagePath>
+    </None>
+  </ItemGroup>
+
 </Project>

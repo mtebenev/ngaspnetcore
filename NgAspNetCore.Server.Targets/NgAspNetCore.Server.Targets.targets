@@ -1,0 +1,69 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Defines msbuild tasks on a Bundle package to copy all modules assets (projects and packages) to the "Packages" folder.
+  -->
+
+  <Target Name="TestixTarget" AfterTargets="Build">
+    <Message Text="Doing things" Importance="high" />
+  </Target>
+
+  <Target Name="CopyPackageAssets" AfterTargets="Build" Condition="'$(IgnorePackageAssets)' != 'true'">
+    <Message Text="Copying package assets 2" Importance="high" />
+    <!-- TODOA not working? -->
+    <Copy
+      SourceFiles="@(PackageAssetFiles)"
+      DestinationFolder="Packages\%(RecursiveDir)"
+      ContinueOnError="true" />
+
+    <ItemGroup>
+      <ModuleProjectReferences
+        Include="@(_MSBuildProjectReferenceExistent)"
+        Condition="Exists('%(RootDir)%(Directory)Module.txt') Or Exists('%(RootDir)%(Directory)obj\Module.txt')" />
+    </ItemGroup>
+
+    <MSBuild
+      Targets="CopyPackageAssetFiles"
+      BuildInParallel="$(BuildInParallel)"
+      Properties="ApplicationDirectory=$(MSBuildProjectDirectory)"
+      Projects="@(ModuleProjectReferences)"
+      Condition="'@(ModuleProjectReferences)' != ''"
+      ContinueOnError="true">
+    </MSBuild>
+  </Target>
+
+  <Target Name="CleanPackageAssets" AfterTargets="Clean"
+          Condition="'$(IgnorePackageAssets)' != 'true' And Exists('Packages')">
+    <ItemGroup>
+      <AllPackageAssetFiles Include="Packages\**" />
+    </ItemGroup>
+    <Delete
+      Files="@(AllPackageAssetFiles)"
+      ContinueOnError="true" />
+    <RemoveDir
+      Directories="Packages\%(AllPackageAssetFiles.RecursiveDir)"
+      ContinueOnError="true" />
+  </Target>
+
+  <!--
+    Defines msbuild props and items on a Bundle package to publish all modules assets (projects and packages).
+  -->
+
+  <PropertyGroup>
+    <MvcRazorExcludeViewFilesFromPublish>false</MvcRazorExcludeViewFilesFromPublish>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Packages\**" />
+    <Content Remove="Packages\**" />
+    <EmbeddedResource Remove="Packages\**" />
+    <None Remove="Packages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ResolvedFileToPublish Include="Packages\**">
+      <RelativePath>Packages\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+    </ResolvedFileToPublish>
+  </ItemGroup>
+
+</Project>
