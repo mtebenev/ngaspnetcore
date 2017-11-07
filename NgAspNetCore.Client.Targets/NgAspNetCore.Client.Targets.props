@@ -40,5 +40,12 @@
       SourceFiles="@(PackageAssetFiles)"
       DestinationFolder="$(ApplicationDirectory)\wwwroot\dist\$(MSBuildProjectName)\%(RecursiveDir)" />
   </Target>
+
+  <ItemGroup>
+    <Compile Remove="dist\**" />
+    <Content Remove="dist\**" />
+    <EmbeddedResource Remove="dist\**" />
+    <None Remove="dist\**" />
+  </ItemGroup>
   
 </Project>

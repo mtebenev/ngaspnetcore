@@ -9,8 +9,8 @@
   </Target>
 
   <Target Name="CopyPackageAssets" AfterTargets="Build" Condition="'$(IgnorePackageAssets)' != 'true'">
-    <Message Text="Copying package assets 2" Importance="high" />
-    <!-- TODOA not working? -->
+    <Message Text="Copying package assets" Importance="high" />
+
     <Copy
       SourceFiles="@(PackageAssetFiles)"
       DestinationFolder="Packages\%(RecursiveDir)"
@@ -49,19 +49,15 @@
     Defines msbuild props and items on a Bundle package to publish all modules assets (projects and packages).
   -->
 
-  <PropertyGroup>
-    <MvcRazorExcludeViewFilesFromPublish>false</MvcRazorExcludeViewFilesFromPublish>
-  </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="Packages\**" />
-    <Content Remove="Packages\**" />
-    <EmbeddedResource Remove="Packages\**" />
-    <None Remove="Packages\**" />
+    <Compile Remove="wwwroot\dist\**" />
+    <Content Remove="wwwroot\dist\**" />
+    <EmbeddedResource Remove="wwwroot\dist\**" />
+    <None Remove="wwwroot\dist\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ResolvedFileToPublish Include="Packages\**">
+    <ResolvedFileToPublish Include="wwwroot\dist\**">
       <RelativePath>Packages\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
     </ResolvedFileToPublish>
   </ItemGroup>
