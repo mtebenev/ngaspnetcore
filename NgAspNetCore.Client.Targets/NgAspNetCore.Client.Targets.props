@@ -9,17 +9,19 @@
     <ModuleManifest>Name: $(MSBuildProjectName)</ModuleManifest>
     <ExcludedFiles>**\*.cs;*.csproj*;obj\**;bin\**;Assets.json;Assets\**;Properties\**;*.props;*.targets;.vs\**</ExcludedFiles>
     <ModuleType Condition="'$(ModuleType)' == ''">Module</ModuleType>
+    <NgCliEnvironment Condition=" '$(Configuration)' == 'Release' ">prod</NgCliEnvironment>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageAssetFiles Include="dist\**\*" Exclude="$(ExcludedFiles)" />
   </ItemGroup>
 
-  <Target Name="BuildClientAppDebug" BeforeTargets="Build"
-          Condition=" '$(Configuration)' == 'Debug' ">
+  <Target Name="BuildClientAppDebug" BeforeTargets="Build">
 
-    <Message Importance="high" Text="Performing client application build: $(MSBuildProjectName)..." />
-    <Exec Command="ng build" />
+    <Message Condition="'$(NgCliEnvironment)'!=''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: '$(NgCliEnvironment)'" />
+    <Message Condition="'$(NgCliEnvironment)'==''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: dev" />
+    <Exec Condition="'$(NgCliEnvironment)'==''" Command="ng build" />
+    <Exec Condition="'$(NgCliEnvironment)'!=''" Command="ng build --environment $(NgCliEnvironment)" />
   </Target>
 
 
