@@ -6,4 +6,12 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DefaultItemExcludes>node_modules/**;$(DefaultItemExcludes)</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NgAspNetCore.Client.Targets" Version="1.0.0" />
+  </ItemGroup>
+
 </Project>

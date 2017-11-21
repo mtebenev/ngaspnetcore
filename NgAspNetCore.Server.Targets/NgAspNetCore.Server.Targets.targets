@@ -1,19 +1,15 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!--
-    Defines msbuild tasks on a Bundle package to copy all modules assets (projects and packages) to the "Packages" folder.
+    Defines msbuild tasks on a Bundle package to copy all modules assets (projects and packages) to the "wwwroot/dist" folder.
   -->
-
-  <Target Name="TestixTarget" AfterTargets="Build">
-    <Message Text="Doing things" Importance="high" />
-  </Target>
 
   <Target Name="CopyPackageAssets" AfterTargets="Build" Condition="'$(IgnorePackageAssets)' != 'true'">
     <Message Text="Copying package assets" Importance="high" />
 
     <Copy
       SourceFiles="@(PackageAssetFiles)"
-      DestinationFolder="Packages\%(RecursiveDir)"
+      DestinationFolder="wwwroot\dist\%(RecursiveDir)"
       ContinueOnError="true" />
 
     <ItemGroup>
@@ -33,15 +29,15 @@
   </Target>
 
   <Target Name="CleanPackageAssets" AfterTargets="Clean"
-          Condition="'$(IgnorePackageAssets)' != 'true' And Exists('Packages')">
+          Condition="'$(IgnorePackageAssets)' != 'true' And Exists('wwwroot\dist')">
     <ItemGroup>
-      <AllPackageAssetFiles Include="Packages\**" />
+      <AllPackageAssetFiles Include="wwwroot\dist\**" />
     </ItemGroup>
     <Delete
       Files="@(AllPackageAssetFiles)"
       ContinueOnError="true" />
     <RemoveDir
-      Directories="Packages\%(AllPackageAssetFiles.RecursiveDir)"
+      Directories="wwwroot\dist\%(AllPackageAssetFiles.RecursiveDir)"
       ContinueOnError="true" />
   </Target>
 
@@ -58,7 +54,7 @@
 
   <ItemGroup>
     <ResolvedFileToPublish Include="wwwroot\dist\**">
-      <RelativePath>Packages\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+      <RelativePath>wwwroot\dist\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
     </ResolvedFileToPublish>
   </ItemGroup>
 

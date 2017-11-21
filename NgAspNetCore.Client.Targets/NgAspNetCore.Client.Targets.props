@@ -2,7 +2,7 @@
 
   <!-- 
     This file is packaged with "NgAspNetCore.Client.Targets" in "./build" such that any Module that references
-    it will get its static assets copied to "$(ApplicationDirectory)\Packages".
+    it will get its static assets copied to "$(ApplicationDirectory)\wwwroot\dist".
   -->
 
   <PropertyGroup>
