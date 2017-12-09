@@ -10,6 +10,9 @@
     <ExcludedFiles>**\*.cs;*.csproj*;obj\**;bin\**;Assets.json;Assets\**;Properties\**;*.props;*.targets;.vs\**</ExcludedFiles>
     <ModuleType Condition="'$(ModuleType)' == ''">Module</ModuleType>
     <NgCliEnvironment Condition=" '$(Configuration)' == 'Release' ">prod</NgCliEnvironment>
+    <NgBuildExists Condition="!Exists('$(MSBuildProjectDirectory)\dist\main.bundle.js')">false</NgBuildExists>
+    <!-- Perform angular app build if either force build or build not exists -->
+    <NgDoBuild Condition="'$(ForceNgBuild)'=='true' Or '$(NgBuildExists)'=='false'">true</NgDoBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +21,10 @@
 
   <Target Name="BuildClientAppDebug" BeforeTargets="Build">
 
-    <Message Condition="'$(NgCliEnvironment)'!=''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: '$(NgCliEnvironment)'" />
-    <Message Condition="'$(NgCliEnvironment)'==''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: dev" />
-    <Exec Condition="'$(NgCliEnvironment)'==''" Command="npm run ng -- build" />
-    <Exec Condition="'$(NgCliEnvironment)'!=''" Command="npm run ng -- build --environment $(NgCliEnvironment)" />
+    <Message Condition="'$(NgDoBuild)'=='true' And '$(NgCliEnvironment)'!=''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: '$(NgCliEnvironment)'" />
+    <Message Condition="'$(NgDoBuild)'=='true' And '$(NgCliEnvironment)'==''" Importance="high" Text="Performing client application build: $(MSBuildProjectName), environment: dev" />
+    <Exec Condition="'$(NgDoBuild)'=='true' And '$(NgCliEnvironment)'==''" Command="npm run ng -- build" />
+    <Exec Condition="'$(NgDoBuild)'=='true' And '$(NgCliEnvironment)'!=''" Command="npm run ng -- build --environment $(NgCliEnvironment)" />
   </Target>
 
 
