@@ -10,7 +10,7 @@
     <ExcludedFiles>**\*.cs;*.csproj*;obj\**;bin\**;Assets.json;Assets\**;Properties\**;*.props;*.targets;.vs\**</ExcludedFiles>
     <ModuleType Condition="'$(ModuleType)' == ''">Module</ModuleType>
     <NgCliEnvironment Condition=" '$(Configuration)' == 'Release' ">prod</NgCliEnvironment>
-    <NgBuildExists Condition="!Exists('$(MSBuildProjectDirectory)\dist\main.bundle.js')">false</NgBuildExists>
+    <NgBuildExists Condition="!Exists('dist\main.bundle.js')">false</NgBuildExists>
     <!-- Perform angular app build if either force build or build not exists -->
     <NgDoBuild Condition="'$(ForceNgBuild)'=='true' Or '$(NgBuildExists)'=='false'">true</NgDoBuild>
   </PropertyGroup>
@@ -27,6 +27,18 @@
     <Exec Condition="'$(NgDoBuild)'=='true' And '$(NgCliEnvironment)'!=''" Command="npm run ng -- build --environment $(NgCliEnvironment)" />
   </Target>
 
+  <Target Name="CleanNgBuild" AfterTargets="Clean"
+          Condition="Exists('dist')">
+    <ItemGroup>
+      <NgBuildDistFiles Include="dist\**" />
+    </ItemGroup>
+    <Delete
+      Files="@(NgBuildDistFiles)"
+      ContinueOnError="true" />
+    <RemoveDir
+      Directories="dist\%(NgBuildDistFiles.RecursiveDir)"
+      ContinueOnError="true" />
+  </Target>
 
   <!-- When building client application, the module generates module.txt file in obj directory. 
 			 When building server application, it looks for module.txt and invokes CopyPackageAssetFiles if found -->
